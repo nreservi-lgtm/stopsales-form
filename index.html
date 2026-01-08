@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire Stop Sales - Calendrier</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        .logo-container img {
+            max-width: 200px;
+            height: auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .checkbox-container {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .checkbox-wrapper {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            gap: 10px;
+        }
+        
+        .checkbox-wrapper input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .checkbox-wrapper label {
+            font-size: 16px;
+            font-weight: 600;
+            color: #495057;
+            cursor: pointer;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        #formFields.hidden {
+            display: none;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .form-group label .required {
+            color: #dc3545;
+            margin-left: 3px;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .success-message {
+            display: none;
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Logo Nreservi -->
+        <div class="logo-container">
+            <!-- 🔧 CHANGEZ L'URL ICI : Uploadez le logo sur ImgBB (https://imgbb.com) et collez l'URL -->
+            <img src="https://i.ibb.co/VOTRE_LOGO_ICI/Logo_Nreservi.png" alt="Nreservi Logo" id="nreserviLogo">
+        </div>
+        
+        <div class="header">
+            <h1>📅 Formulaire Stop Sales</h1>
+            <p>Cochez "Rien à Signaler" si vous n'avez pas de stop sales, sinon remplissez vos informations de base</p>
+        </div>
+        
+        <form id="stopSalesForm">
+            <!-- Checkbox Rien à signaler -->
+            <div class="checkbox-container">
+                <div class="checkbox-wrapper">
+                    <input type="checkbox" id="nothingToReport" name="nothingToReport">
+                    <label for="nothingToReport">🟢 Rien à signaler</label>
+                </div>
+            </div>
+            
+            <!-- Champs du formulaire -->
+            <div id="formFields">
+                <div class="form-group">
+                    <label for="hotelName">
+                        Nom de l'hôtel
+                        <span class="required">*</span>
+                    </label>
+                    <input type="text" id="hotelName" name="hotelName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fullName">
+                        Nom et Prénom
+                        <span class="required">*</span>
+                    </label>
+                    <input type="text" id="fullName" name="fullName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="fonction">
+                        Fonction
+                        <span class="required">*</span>
+                    </label>
+                    <input type="text" id="fonction" name="fonction" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">
+                        Email de confirmation
+                        <span class="required">*</span>
+                    </label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="startDate">
+                        Date de début Stop Sales
+                        <span class="required">*</span>
+                    </label>
+                    <input type="date" id="startDate" name="startDate" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="endDate">
+                        Date de fin Stop Sales
+                        <span class="required">*</span>
+                    </label>
+                    <input type="date" id="endDate" name="endDate" required>
+                </div>
+            </div>
+            
+            <!-- Commentaires (toujours visible) -->
+            <div class="form-group">
+                <label for="comments">
+                    Commentaires (optionnel)
+                </label>
+                <textarea id="comments" name="comments"></textarea>
+            </div>
+            
+            <!-- Bouton Submit -->
+            <button type="submit" class="submit-btn">
+                ✅ Envoyer
+            </button>
+            
+            <!-- Message de succès -->
+            <div class="success-message" id="successMessage">
+                ✅ Formulaire envoyé avec succès !
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        const checkbox = document.getElementById('nothingToReport');
+        const formFields = document.getElementById('formFields');
+        const form = document.getElementById('stopSalesForm');
+        const successMessage = document.getElementById('successMessage');
+        
+        const requiredInputs = [
+            document.getElementById('hotelName'),
+            document.getElementById('fullName'),
+            document.getElementById('fonction'),
+            document.getElementById('email'),
+            document.getElementById('startDate'),
+            document.getElementById('endDate')
+        ];
+        
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                formFields.classList.add('hidden');
+                requiredInputs.forEach(input => {
+                    input.removeAttribute('required');
+                    input.value = '';
+                });
+            } else {
+                formFields.classList.remove('hidden');
+                requiredInputs.forEach(input => {
+                    input.setAttribute('required', 'required');
+                });
+            }
+        });
+        
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                nothingToReport: checkbox.checked,
+                comments: document.getElementById('comments').value
+            };
+            
+            if (!checkbox.checked) {
+                formData.hotelName = document.getElementById('hotelName').value;
+                formData.fullName = document.getElementById('fullName').value;
+                formData.fonction = document.getElementById('fonction').value;
+                formData.email = document.getElementById('email').value;
+                formData.startDate = document.getElementById('startDate').value;
+                formData.endDate = document.getElementById('endDate').value;
+            }
+            
+            console.log('Données du formulaire:', formData);
+            
+            successMessage.classList.add('show');
+            
+            setTimeout(() => {
+                form.reset();
+                formFields.classList.remove('hidden');
+                requiredInputs.forEach(input => {
+                    input.setAttribute('required', 'required');
+                });
+                successMessage.classList.remove('show');
+            }, 2000);
+        });
+        
+        const startDateInput = document.getElementById('startDate');
+        const endDateInput = document.getElementById('endDate');
+        
+        startDateInput.addEventListener('change', function() {
+            endDateInput.min = this.value;
+        });
+        
+        endDateInput.addEventListener('change', function() {
+            if (this.value < startDateInput.value) {
+                alert('⚠️ La date de fin doit être après la date de début');
+                this.value = '';
+            }
+        });
+    </script>
+</body>
+</html>
