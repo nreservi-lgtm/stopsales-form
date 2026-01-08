@@ -309,7 +309,27 @@
                 formData.endDate = document.getElementById('endDate').value;
             }
             
-            console.log('Données du formulaire:', formData);
+            // Envoyer à n8n
+fetch('https://nreservi.app.n8n.cloud/form-test/09c31b6c-4b8d-4b47-8a82-1cb3bb2403ed', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(formData)
+})
+.then(response => response.json())
+.then(data => {
+    console.log('Envoyé avec succès:', data);
+    // Afficher le message de succès
+    document.getElementById('successMessage').classList.add('show');
+    form.reset();
+    formFields.classList.remove('hidden');
+    checkbox.checked = false;
+})
+.catch(error => {
+    console.error('Erreur:', error);
+    alert('Une erreur est survenue lors de l\'envoi du formulaire');
+});
             
             successMessage.classList.add('show');
             
