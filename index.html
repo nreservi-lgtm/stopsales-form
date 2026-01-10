@@ -36,39 +36,48 @@
         }
         
         .logo {
-            max-width: 200px;
+            max-width: 80px;
             height: auto;
         }
         
         h1 {
             color: #333;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
             font-size: 28px;
         }
         
-        .nothing-to-report-section {
-            background: #fff3cd;
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .nothing-to-report-box {
+            background: white;
             padding: 15px 20px;
             border-radius: 10px;
             margin-bottom: 30px;
-            border-left: 4px solid #ffc107;
+            border: 2px dashed #ccc;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 12px;
         }
         
-        .nothing-to-report-section input[type="checkbox"] {
-            width: 22px;
-            height: 22px;
+        .nothing-to-report-box input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
             cursor: pointer;
         }
         
-        .nothing-to-report-section label {
+        .nothing-to-report-box label {
             margin: 0;
             cursor: pointer;
             font-weight: 600;
-            color: #856404;
+            color: #4CAF50;
             font-size: 16px;
         }
         
@@ -79,7 +88,7 @@
         label {
             display: block;
             margin-bottom: 8px;
-            color: #555;
+            color: #333;
             font-weight: 600;
         }
         
@@ -93,9 +102,9 @@
         textarea {
             width: 100%;
             padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
             transition: border-color 0.3s;
         }
         
@@ -108,9 +117,8 @@
         }
         
         input[readonly] {
-            background-color: #e8f4f8;
+            background-color: #f5f5f5;
             cursor: not-allowed;
-            border: 2px solid #2196F3;
         }
         
         textarea {
@@ -140,13 +148,6 @@
             transform: translateY(0);
         }
         
-        small {
-            display: block;
-            margin-top: 5px;
-            color: #666;
-            font-size: 13px;
-        }
-        
         .success-message {
             background: #d4edda;
             color: #155724;
@@ -166,73 +167,74 @@
             border: 2px solid #f5c6cb;
             display: none;
         }
+        
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Logo Nreservi -->
+        <!-- Logo -->
         <div class="logo-container">
-            <img src="http://34.79.79.122:5000/static/logo.png" alt="Nreservi" class="logo">
+            <img src="http://34.79.79.122:5000/static/logo.png" alt="Nreservi Logo" class="logo">
         </div>
         
         <h1>📅 Formulaire Stop Sales</h1>
         
-        <!-- Rien à signaler - EN HAUT -->
-        <div class="nothing-to-report-section">
+        <p class="subtitle">
+            Cochez "Rien à Signaler" si vous n'avez pas de stop sales, sinon remplissez vos informations de base
+        </p>
+        
+        <!-- Rien à signaler -->
+        <div class="nothing-to-report-box">
             <input type="checkbox" id="nothingToReport" name="nothingToReport" value="true">
-            <label for="nothingToReport">💡 Rien à signaler cette période</label>
+            <label for="nothingToReport">🟢 Rien à signaler</label>
         </div>
         
         <form id="stopSalesForm" action="https://nreservi.app.n8n.cloud/webhook/stopsales-form" method="POST">
             
             <!-- Nom de l'hôtel -->
-            <div class="form-group">
+            <div class="form-group" id="hotelNameGroup">
                 <label for="hotelName">Nom de l'hôtel <span class="required">*</span></label>
-                <input type="text" id="hotelName" name="hotelName" required 
-                       placeholder="Ex: Printania Hotel">
-                <small>Obligatoire pour identification</small>
+                <input type="text" id="hotelName" name="hotelName" required>
             </div>
             
-            <!-- Nom complet -->
-            <div class="form-group">
-                <label for="name">Nom complet <span class="required">*</span></label>
-                <input type="text" id="name" name="name" required 
-                       placeholder="Ex: Prénom Nom">
-                <small>Obligatoire pour identification</small>
+            <!-- Nom et Prénom -->
+            <div class="form-group" id="nameGroup">
+                <label for="name">Nom et Prénom <span class="required">*</span></label>
+                <input type="text" id="name" name="name" required>
             </div>
             
             <!-- Fonction -->
-            <div class="form-group">
-                <label for="fonction">Fonction</label>
-                <input type="text" id="fonction" name="fonction" 
-                       placeholder="Ex: Directeur, Réceptionniste, Manager">
+            <div class="form-group" id="fonctionGroup">
+                <label for="fonction">Fonction <span class="required">*</span></label>
+                <input type="text" id="fonction" name="fonction" required>
             </div>
             
-            <!-- Email (pré-rempli et visible) -->
+            <!-- Email (toujours visible) -->
             <div class="form-group">
                 <label for="email">Email <span class="required">*</span></label>
-                <input type="email" id="email" name="email" required readonly
-                       title="Email pré-rempli automatiquement depuis votre lien">
-                <small>📧 Cet email est celui où vous avez reçu le formulaire</small>
+                <input type="email" id="email" name="email" required readonly>
             </div>
             
             <!-- Date de début -->
-            <div class="form-group">
-                <label for="startDate">Date de début <span class="required">*</span></label>
+            <div class="form-group" id="startDateGroup">
+                <label for="startDate">Date de début Stop Sales <span class="required">*</span></label>
                 <input type="date" id="startDate" name="startDate" required>
             </div>
             
             <!-- Date de fin -->
-            <div class="form-group">
-                <label for="endDate">Date de fin <span class="required">*</span></label>
+            <div class="form-group" id="endDateGroup">
+                <label for="endDate">Date de fin Stop Sales <span class="required">*</span></label>
                 <input type="date" id="endDate" name="endDate" required>
             </div>
             
-            <!-- Commentaires -->
+            <!-- Commentaires (toujours visible) -->
             <div class="form-group">
                 <label for="comments">Commentaires (optionnel)</label>
                 <textarea id="comments" name="comments" 
-                          placeholder="Précisions sur les dates, raisons du stop sales, etc."></textarea>
+                          placeholder="Ajoutez vos remarques, notes ou un petit clin d'œil 😊"></textarea>
             </div>
             
             <!-- Bouton d'envoi -->
@@ -240,107 +242,96 @@
             
         </form>
         
-        <!-- Messages de succès/erreur -->
+        <!-- Messages -->
         <div class="success-message" id="successMessage">
             ✅ Formulaire envoyé avec succès !<br>
-            Votre demande a été enregistrée et sera traitée automatiquement.
+            Votre demande a été enregistrée.
         </div>
         
         <div class="error-message" id="errorMessage">
-            ❌ Une erreur est survenue lors de l'envoi.<br>
-            Veuillez réessayer ou contacter le support.
+            ❌ Une erreur est survenue.<br>
+            Veuillez réessayer.
         </div>
     </div>
 
     <script>
-        // ===== RÉCUPÉRER L'EMAIL DEPUIS L'URL =====
+        // Récupérer l'email depuis l'URL
         const urlParams = new URLSearchParams(window.location.search);
         const emailFromUrl = urlParams.get('email');
         const emailInput = document.getElementById('email');
 
         if (emailFromUrl) {
             emailInput.value = decodeURIComponent(emailFromUrl);
-        } else {
-            emailInput.style.backgroundColor = '#ffe6e6';
-            emailInput.placeholder = '⚠️ Ce formulaire doit être ouvert via le lien reçu par email';
         }
 
-        // ===== GESTION "RIEN À SIGNALER" =====
+        // Gestion "Rien à signaler"
         const nothingToReportCheckbox = document.getElementById('nothingToReport');
+        const hotelNameGroup = document.getElementById('hotelNameGroup');
+        const nameGroup = document.getElementById('nameGroup');
+        const fonctionGroup = document.getElementById('fonctionGroup');
+        const startDateGroup = document.getElementById('startDateGroup');
+        const endDateGroup = document.getElementById('endDateGroup');
+
+        const hotelNameInput = document.getElementById('hotelName');
+        const nameInput = document.getElementById('name');
+        const fonctionInput = document.getElementById('fonction');
         const startDateInput = document.getElementById('startDate');
         const endDateInput = document.getElementById('endDate');
-        const commentsInput = document.getElementById('comments');
 
         nothingToReportCheckbox.addEventListener('change', function() {
             if (this.checked) {
-                // Désactiver UNIQUEMENT dates et commentaires
-                startDateInput.disabled = true;
+                // CACHER tous les champs sauf email et commentaires
+                hotelNameGroup.classList.add('hidden');
+                nameGroup.classList.add('hidden');
+                fonctionGroup.classList.add('hidden');
+                startDateGroup.classList.add('hidden');
+                endDateGroup.classList.add('hidden');
+                
+                // Désactiver la validation
+                hotelNameInput.required = false;
+                nameInput.required = false;
+                fonctionInput.required = false;
                 startDateInput.required = false;
-                startDateInput.value = '';
-                startDateInput.style.backgroundColor = '#f5f5f5';
-                
-                endDateInput.disabled = true;
                 endDateInput.required = false;
-                endDateInput.value = '';
-                endDateInput.style.backgroundColor = '#f5f5f5';
                 
-                commentsInput.disabled = true;
-                commentsInput.value = '';
-                commentsInput.style.backgroundColor = '#f5f5f5';
-                
-                // EMAIL, HÔTEL, NOM, FONCTION restent visibles et actifs
             } else {
-                // Réactiver
-                startDateInput.disabled = false;
+                // AFFICHER tous les champs
+                hotelNameGroup.classList.remove('hidden');
+                nameGroup.classList.remove('hidden');
+                fonctionGroup.classList.remove('hidden');
+                startDateGroup.classList.remove('hidden');
+                endDateGroup.classList.remove('hidden');
+                
+                // Réactiver la validation
+                hotelNameInput.required = true;
+                nameInput.required = true;
+                fonctionInput.required = true;
                 startDateInput.required = true;
-                startDateInput.style.backgroundColor = 'white';
-                
-                endDateInput.disabled = false;
                 endDateInput.required = true;
-                endDateInput.style.backgroundColor = 'white';
-                
-                commentsInput.disabled = false;
-                commentsInput.style.backgroundColor = 'white';
             }
         });
 
-        // ===== VALIDATION AVANT ENVOI =====
+        // Validation avant envoi
         document.getElementById('stopSalesForm').addEventListener('submit', function(e) {
-            const hotelName = document.getElementById('hotelName').value.trim();
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const nothingToReport = document.getElementById('nothingToReport').checked;
-            
-            // Vérifier champs obligatoires
-            if (!hotelName) {
-                e.preventDefault();
-                alert('⚠️ Le nom de l\'hôtel est obligatoire.');
-                document.getElementById('hotelName').focus();
-                return false;
-            }
-            
-            if (!name) {
-                e.preventDefault();
-                alert('⚠️ Votre nom complet est obligatoire.');
-                document.getElementById('name').focus();
-                return false;
-            }
+            const nothingToReport = nothingToReportCheckbox.checked;
+            const email = emailInput.value.trim();
             
             if (!email) {
                 e.preventDefault();
                 alert('⚠️ L\'email est obligatoire.');
-                document.getElementById('email').focus();
                 return false;
             }
             
-            // Si "Rien à signaler" n'est PAS coché, vérifier les dates
             if (!nothingToReport) {
-                const startDate = document.getElementById('startDate').value;
-                const endDate = document.getElementById('endDate').value;
+                const hotelName = hotelNameInput.value.trim();
+                const name = nameInput.value.trim();
+                const fonction = fonctionInput.value.trim();
+                const startDate = startDateInput.value;
+                const endDate = endDateInput.value;
                 
-                if (!startDate || !endDate) {
+                if (!hotelName || !name || !fonction || !startDate || !endDate) {
                     e.preventDefault();
-                    alert('⚠️ Les dates sont obligatoires si vous avez un stop sales à signaler.');
+                    alert('⚠️ Veuillez remplir tous les champs obligatoires.');
                     return false;
                 }
                 
