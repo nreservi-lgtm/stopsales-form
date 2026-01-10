@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+html<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -30,10 +30,20 @@
             width: 100%;
         }
         
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            max-width: 200px;
+            height: auto;
+        }
+        
         h1 {
             color: #333;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             font-size: 28px;
         }
         
@@ -90,9 +100,10 @@
             align-items: center;
             gap: 10px;
             padding: 15px;
-            background: #f8f9fa;
+            background: #fff3cd;
             border-radius: 8px;
             margin: 20px 0;
+            border: 2px solid #ffc107;
         }
         
         input[type="checkbox"] {
@@ -104,7 +115,8 @@
         .checkbox-group label {
             margin: 0;
             cursor: pointer;
-            font-weight: normal;
+            font-weight: 600;
+            color: #856404;
         }
         
         button {
@@ -159,16 +171,27 @@
 </head>
 <body>
     <div class="container">
+        <!-- Logo Nreservi -->
+        <div class="logo-container">
+            <img src="http://34.79.79.122:5000/static/logo.png" alt="Nreservi" class="logo">
+        </div>
+        
         <h1>📅 Formulaire Stop Sales</h1>
         
         <form id="stopSalesForm" action="https://nreservi.app.n8n.cloud/webhook/stopsales-form" method="POST">
+            
+            <!-- Rien à signaler - EN HAUT -->
+            <div class="checkbox-group">
+                <input type="checkbox" id="nothingToReport" name="nothingToReport" value="true">
+                <label for="nothingToReport">💡 Rien à signaler cette période</label>
+            </div>
             
             <!-- Nom de l'hôtel -->
             <div class="form-group">
                 <label for="hotelName">Nom de l'hôtel <span class="required">*</span></label>
                 <input type="text" id="hotelName" name="hotelName" required 
                        placeholder="Ex: Printania Hotel">
-                <small>Obligatoire pour identification (même si rien à signaler)</small>
+                <small>Obligatoire pour identification</small>
             </div>
             
             <!-- Nom complet -->
@@ -176,7 +199,7 @@
                 <label for="name">Nom complet <span class="required">*</span></label>
                 <input type="text" id="name" name="name" required 
                        placeholder="Ex: Prénom Nom">
-                <small>Obligatoire pour identification (même si rien à signaler)</small>
+                <small>Obligatoire pour identification</small>
             </div>
             
             <!-- Fonction -->
@@ -192,12 +215,6 @@
                 <input type="email" id="email" name="email" required readonly
                        title="Email pré-rempli automatiquement depuis votre lien">
                 <small>📧 Cet email est celui où vous avez reçu le formulaire</small>
-            </div>
-            
-            <!-- Rien à signaler -->
-            <div class="checkbox-group">
-                <input type="checkbox" id="nothingToReport" name="nothingToReport" value="true">
-                <label for="nothingToReport">Rien à signaler cette période</label>
             </div>
             
             <!-- Date de début -->
@@ -272,7 +289,7 @@
                 commentsInput.value = '';
                 commentsInput.style.backgroundColor = '#f5f5f5';
                 
-                // EMAIL RESTE VISIBLE ET PRÉ-REMPLI (ne rien changer)
+                // EMAIL, HÔTEL, NOM, FONCTION restent visibles et actifs
             } else {
                 // Réactiver
                 startDateInput.disabled = false;
