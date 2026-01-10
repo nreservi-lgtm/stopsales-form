@@ -148,6 +148,12 @@
             transform: translateY(0);
         }
         
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
         .success-message {
             background: #d4edda;
             color: #155724;
@@ -156,6 +162,8 @@
             margin-top: 20px;
             border: 2px solid #c3e6cb;
             display: none;
+            text-align: center;
+            font-weight: 600;
         }
         
         .error-message {
@@ -166,6 +174,8 @@
             margin-top: 20px;
             border: 2px solid #f5c6cb;
             display: none;
+            text-align: center;
+            font-weight: 600;
         }
         
         .hidden {
@@ -177,7 +187,7 @@
     <div class="container">
         <!-- Logo -->
         <div class="logo-container">
-            <img src="http://34.79.79.122:5000/static/logo.png" alt="Nreservi Logo" class="logo">
+            <img src="./images/logo.png" alt="Nreservi Logo" class="logo" onerror="this.style.display='none'">
         </div>
         
         <h1>📅 Formulaire Stop Sales</h1>
@@ -188,28 +198,28 @@
         
         <!-- Rien à signaler -->
         <div class="nothing-to-report-box">
-            <input type="checkbox" id="nothingToReport" name="nothingToReport" value="true">
+            <input type="checkbox" id="nothingToReport">
             <label for="nothingToReport">🟢 Rien à signaler</label>
         </div>
         
-        <form id="stopSalesForm" action="https://nreservi.app.n8n.cloud/webhook/stopsales-form" method="POST">
+        <form id="stopSalesForm">
             
             <!-- Nom de l'hôtel -->
             <div class="form-group" id="hotelNameGroup">
                 <label for="hotelName">Nom de l'hôtel <span class="required">*</span></label>
-                <input type="text" id="hotelName" name="hotelName" required>
+                <input type="text" id="hotelName" name="hotelName">
             </div>
             
             <!-- Nom et Prénom -->
             <div class="form-group" id="nameGroup">
                 <label for="name">Nom et Prénom <span class="required">*</span></label>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="name">
             </div>
             
             <!-- Fonction -->
             <div class="form-group" id="fonctionGroup">
                 <label for="fonction">Fonction <span class="required">*</span></label>
-                <input type="text" id="fonction" name="fonction" required>
+                <input type="text" id="fonction" name="fonction">
             </div>
             
             <!-- Email (toujours visible) -->
@@ -221,13 +231,13 @@
             <!-- Date de début -->
             <div class="form-group" id="startDateGroup">
                 <label for="startDate">Date de début Stop Sales <span class="required">*</span></label>
-                <input type="date" id="startDate" name="startDate" required>
+                <input type="date" id="startDate" name="startDate">
             </div>
             
             <!-- Date de fin -->
             <div class="form-group" id="endDateGroup">
                 <label for="endDate">Date de fin Stop Sales <span class="required">*</span></label>
-                <input type="date" id="endDate" name="endDate" required>
+                <input type="date" id="endDate" name="endDate">
             </div>
             
             <!-- Commentaires (toujours visible) -->
@@ -238,19 +248,19 @@
             </div>
             
             <!-- Bouton d'envoi -->
-            <button type="submit">Envoyer le formulaire</button>
+            <button type="submit" id="submitBtn">Envoyer le formulaire</button>
             
         </form>
         
         <!-- Messages -->
         <div class="success-message" id="successMessage">
             ✅ Formulaire envoyé avec succès !<br>
-            Votre demande a été enregistrée.
+            Votre demande a été enregistrée et sera traitée automatiquement.
         </div>
         
         <div class="error-message" id="errorMessage">
-            ❌ Une erreur est survenue.<br>
-            Veuillez réessayer.
+            ❌ Une erreur est survenue lors de l'envoi.<br>
+            Veuillez réessayer ou contacter le support.
         </div>
     </div>
 
@@ -272,77 +282,107 @@
         const startDateGroup = document.getElementById('startDateGroup');
         const endDateGroup = document.getElementById('endDateGroup');
 
-        const hotelNameInput = document.getElementById('hotelName');
-        const nameInput = document.getElementById('name');
-        const fonctionInput = document.getElementById('fonction');
-        const startDateInput = document.getElementById('startDate');
-        const endDateInput = document.getElementById('endDate');
-
         nothingToReportCheckbox.addEventListener('change', function() {
             if (this.checked) {
-                // CACHER tous les champs sauf email et commentaires
+                // CACHER les champs
                 hotelNameGroup.classList.add('hidden');
                 nameGroup.classList.add('hidden');
                 fonctionGroup.classList.add('hidden');
                 startDateGroup.classList.add('hidden');
                 endDateGroup.classList.add('hidden');
-                
-                // Désactiver la validation
-                hotelNameInput.required = false;
-                nameInput.required = false;
-                fonctionInput.required = false;
-                startDateInput.required = false;
-                endDateInput.required = false;
-                
             } else {
-                // AFFICHER tous les champs
+                // AFFICHER les champs
                 hotelNameGroup.classList.remove('hidden');
                 nameGroup.classList.remove('hidden');
                 fonctionGroup.classList.remove('hidden');
                 startDateGroup.classList.remove('hidden');
                 endDateGroup.classList.remove('hidden');
-                
-                // Réactiver la validation
-                hotelNameInput.required = true;
-                nameInput.required = true;
-                fonctionInput.required = true;
-                startDateInput.required = true;
-                endDateInput.required = true;
             }
         });
 
-        // Validation avant envoi
-        document.getElementById('stopSalesForm').addEventListener('submit', function(e) {
+        // ENVOI DU FORMULAIRE (AJAX)
+        document.getElementById('stopSalesForm').addEventListener('submit', async function(e) {
+            e.preventDefault(); // EMPÊCHER la redirection
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const successMsg = document.getElementById('successMessage');
+            const errorMsg = document.getElementById('errorMessage');
+            
+            // Cacher les messages
+            successMsg.style.display = 'none';
+            errorMsg.style.display = 'none';
+            
+            // Désactiver le bouton
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Envoi en cours...';
+            
+            // Préparer les données
             const nothingToReport = nothingToReportCheckbox.checked;
-            const email = emailInput.value.trim();
             
-            if (!email) {
-                e.preventDefault();
-                alert('⚠️ L\'email est obligatoire.');
-                return false;
-            }
+            const formData = {
+                email: emailInput.value,
+                comments: document.getElementById('comments').value,
+                nothingToReport: nothingToReport
+            };
             
+            // Si "Rien à signaler" n'est PAS coché, ajouter les autres champs
             if (!nothingToReport) {
-                const hotelName = hotelNameInput.value.trim();
-                const name = nameInput.value.trim();
-                const fonction = fonctionInput.value.trim();
-                const startDate = startDateInput.value;
-                const endDate = endDateInput.value;
+                formData.hotelName = document.getElementById('hotelName').value;
+                formData.name = document.getElementById('name').value;
+                formData.fonction = document.getElementById('fonction').value;
+                formData.startDate = document.getElementById('startDate').value;
+                formData.endDate = document.getElementById('endDate').value;
                 
-                if (!hotelName || !name || !fonction || !startDate || !endDate) {
-                    e.preventDefault();
+                // Validation
+                if (!formData.hotelName || !formData.name || !formData.fonction || 
+                    !formData.startDate || !formData.endDate) {
                     alert('⚠️ Veuillez remplir tous les champs obligatoires.');
-                    return false;
-                }
-                
-                if (new Date(startDate) > new Date(endDate)) {
-                    e.preventDefault();
-                    alert('⚠️ La date de début doit être antérieure à la date de fin.');
-                    return false;
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Envoyer le formulaire';
+                    return;
                 }
             }
             
-            return true;
+            try {
+                // Envoyer les données
+                const response = await fetch('https://nreservi.app.n8n.cloud/webhook/stopsales-form', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                if (response.ok) {
+                    // Succès
+                    successMsg.style.display = 'block';
+                    document.getElementById('stopSalesForm').reset();
+                    nothingToReportCheckbox.checked = false;
+                    
+                    // Réafficher tous les champs
+                    hotelNameGroup.classList.remove('hidden');
+                    nameGroup.classList.remove('hidden');
+                    fonctionGroup.classList.remove('hidden');
+                    startDateGroup.classList.remove('hidden');
+                    endDateGroup.classList.remove('hidden');
+                    
+                    // Remettre l'email
+                    if (emailFromUrl) {
+                        emailInput.value = decodeURIComponent(emailFromUrl);
+                    }
+                } else {
+                    // Erreur
+                    errorMsg.style.display = 'block';
+                }
+            } catch (error) {
+                // Erreur réseau
+                errorMsg.style.display = 'block';
+                console.error('Erreur:', error);
+            } finally {
+                // Réactiver le bouton
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Envoyer le formulaire';
+            }
         });
     </script>
 </body>
