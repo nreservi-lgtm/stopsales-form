@@ -362,5 +362,21 @@ fetch('https://nreservi.app.n8n.cloud/webhook/stopsales-form', {
             }
         });
     </script>
+    <script>
+// Récupérer l'email depuis l'URL
+const urlParams = new URLSearchParams(window.location.search);
+const emailFromUrl = urlParams.get('email');
+
+const emailInput = document.getElementById('email');
+
+if (emailFromUrl) {
+    // Décoder et pré-remplir l'email
+    emailInput.value = decodeURIComponent(emailFromUrl);
+} else {
+    // Pas d'email dans l'URL - afficher un avertissement
+    emailInput.style.backgroundColor = '#ffe6e6';
+    emailInput.placeholder = '⚠️ Ce formulaire doit être ouvert via le lien reçu par email';
+}
+</script>
 </body>
 </html>
